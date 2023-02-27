@@ -4,19 +4,39 @@ const debug = require("debug")("app");
 const morgan = require("morgan");
 const path = require("path");
 
+
+
+
+const PORT = process.env.PORT || 3000
 const app = express();
+
+const sessionsRouter = require("./src/routers/sessionsRouter");
+const adminRouter = require('./src/routers/adminRouter');
 
 
 app.use(morgan("tiny"));
 app.use(express.static(path.join(__dirname, "/public/")))
 
+
+app.set("views", "./src/views");
+app.set("view engine", "ejs");
+
+
+// sessionsRouter.route("/2").get((req, res) => {
+//     res.send("Hello Second Sessions")
+// })
+
+
+app.use("/sessions", sessionsRouter);
+app.use("/admin", adminRouter);
+
+
 app.get("/", (req, res) => {
-    res.send("Hello from Express");
+    res.render("index", { title: "Globomantics", data: ["a", "b", "c"] });
 })
 
-app.listen(
-    3000, () => {
-        debug(`listening on port ${chalk.green("3000")}`);
-    }
+app.listen(PORT, () => {
+    debug(`listening on port ${chalk.green(PORT)}`);
+}
 
 );
